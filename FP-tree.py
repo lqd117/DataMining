@@ -1,5 +1,5 @@
 from typing import Iterator
-import time,math
+import time, math
 
 
 def readLines(path: str) -> Iterator[str]:
@@ -7,12 +7,14 @@ def readLines(path: str) -> Iterator[str]:
         for line in f.read().split('\n'):
             yield line
 
-def dfs(id,tree,top_list):
+
+def dfs(id, tree, top_list):
     for item in tree[id]:
         top_list[item].append(tree[id][item][0])
-        dfs(tree[id][item][0],tree,top_list)
+        dfs(tree[id][item][0], tree, top_list)
 
-#判断是不是链
+
+# 判断是不是链
 def judge(tree):
     for item in tree:
         cnt = 0
@@ -23,7 +25,7 @@ def judge(tree):
     return True
 
 
-def create_FP_tree(lst,s:int,pre,ans):
+def create_FP_tree(lst, s: int, pre, ans):
     if pre != []:
         ans.append(pre)
     length = 0
@@ -35,7 +37,7 @@ def create_FP_tree(lst,s:int,pre,ans):
             else:
                 support[x] = 1
     for item in lst:
-        for i in range(len(item)-1,-1,-1):
+        for i in range(len(item) - 1, -1, -1):
             if support[item[i]] < s:
                 item.pop(i)
             else:
@@ -43,19 +45,19 @@ def create_FP_tree(lst,s:int,pre,ans):
     if length == 0:
         return
     for item in lst:
-        item.sort(key=lambda x:-support[x])
+        item.sort(key=lambda x: -support[x])
     top_list = []
     for item in support:
         if support[item] >= s:
             top_list.append(item)
-    top_list.sort(key=lambda x:support[x])
+    top_list.sort(key=lambda x: support[x])
     top_arr = {}
     for item in top_list:
         top_arr[item] = []
 
     tree = [{} for _ in range(length)]
     fa = [-1 for _ in range(length)]
-    b = [0 for _ in range(length)]#节点代表的值
+    b = [0 for _ in range(length)]  # 节点代表的值
     cnt = 1
     # 构造FP-tree
     for item in lst:
@@ -65,16 +67,16 @@ def create_FP_tree(lst,s:int,pre,ans):
                 tree[id][x][1] += 1
                 id = tree[id][x][0]
             else:
-                tree[id][x] = [cnt,1]
+                tree[id][x] = [cnt, 1]
                 b[cnt] = x
                 fa[cnt] = id
                 id = cnt
                 cnt += 1
                 top_arr[x].append(id)
     if judge(tree):
-        for i in range(1,2**top_list.__len__()):
+        for i in range(1, 2 ** top_list.__len__()):
             temp1 = []
-            id,j = 0,i
+            id, j = 0, i
             while j:
                 if j & 1:
                     temp1.append(top_list[id])
@@ -95,9 +97,7 @@ def create_FP_tree(lst,s:int,pre,ans):
             for _ in range(cnt):
                 new_list.append(temp)
 
-        create_FP_tree(new_list,s,pre+[item],ans)
-
-
+        create_FP_tree(new_list, s, pre + [item], ans)
 
 
 def main():
@@ -112,9 +112,9 @@ def main():
 
     ans = []
 
-    s = math.ceil(s*sum)
-    create_FP_tree(lst,s,[],ans)
-    ans.sort(key=lambda x:x.__len__())
+    s = math.ceil(s * sum)
+    create_FP_tree(lst, s, [], ans)
+    ans.sort(key=lambda x: x.__len__())
     vis = {}
     for item in ans:
         if len(item) in vis.keys():
@@ -127,6 +127,7 @@ def main():
     print(vis)
     end = time.time()
     print('The time is {id}s'.format(id=end - start))
+
 
 if __name__ == '__main__':
     main()
